@@ -4,27 +4,21 @@ import time
 import os
 import signal
 import sys
-
 # Directorio de salida
 output_dir = "/home/hera/grabaciones"
 os.makedirs(output_dir, exist_ok=True)
-
 # Nombre del archivo
 output_file = os.path.join(output_dir, f"grabacion_{time.strftime('%Y%m%d_%H%M%S')}.mp4")
-
 print("Grabador de Pantalla para Hyprland")
 print(f"Guardando en: {output_file}\n")
-
 # Detectar herramienta
 recorder = None
-
 try:
     subprocess.check_output(['which', 'wf-recorder'], stderr=subprocess.DEVNULL)
     recorder = 'wf-recorder'
     print("Usando wf-recorder")
 except:
     pass
-
 if not recorder:
     try:
         subprocess.check_output(['which', 'wl-screenrec'], stderr=subprocess.DEVNULL)
@@ -32,24 +26,22 @@ if not recorder:
         print("Usando wl-screenrec")
     except:
         pass
-
 if not recorder:
     print("No se encontro grabador de pantalla para Wayland\n")
     print("Instala una opcion:")
     print("  yay -S wl-screenrec")
     print("  yay -S wf-recorder")
     sys.exit(1)
-
 process = None
-
 try:
     # Configurar comando
     if recorder == 'wl-screenrec':
-        cmd = ['wl-screenrec', '--no-hw', '-f', output_file]
+        cmd = ['wl-screenrec', '--no-hw', '-f', output_file, '--audio', '--audio-device', 'alsa_output.pci-0000_00_1f.3.analog-stereo.monitor']
     else:
         cmd = [
             'wf-recorder', '-f', output_file, '-c', 'libx264',
-            '-p', 'preset=ultrafast', '-p', 'crf=23', '-r', '30'
+            '-p', 'preset=ultrafast', '-p', 'crf=23', '-r', '30',
+            '--audio=alsa_output.pci-0000_00_1f.3.analog-stereo.monitor'
         ]
     
     print("\nIniciando grabacion en 2 segundos...")
@@ -117,7 +109,6 @@ try:
         print("- Otra grabacion ya activa")
         print("- Compositor no responde")
         print("- Permisos insuficientes")
-
 except KeyboardInterrupt:
     signal_handler(None, None)
 except Exception as e:
