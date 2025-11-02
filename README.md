@@ -4,6 +4,7 @@ para empezar a usar esta herramienta necesitaras un par de dependencias antes de
 
 #arch
 sudo pacman -S wf-recorder ffmpeg python mpv
+
 #debian based
 sudo apt update
 sudo apt install wf-recorder ffmpeg python3 mpv
